@@ -1,0 +1,19 @@
+{
+  "name": "feature-toggle-example",
+  "version": "1.0.0",
+  "description": "TypeScript SDK",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node index.ts"
+  },
+  "keywords": [
+    "Feature Toggle",
+    "TypeScript",
+    "SDK"
+  ],
+  "author": "Nadezhda Kirillova<kirillova.nadezhdaa@yandex.ru>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
+}

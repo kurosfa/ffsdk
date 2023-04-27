@@ -2,9 +2,11 @@
   "name": "ffsdk",
   "version": "1.0.0",
   "description": "TypeScript SDK",
-  "main": "index.ts",
+  "main": "dist/out-tsc/src/index.js",
+  "types": "dist/out-tsc/src/index.d.ts",
   "scripts": {
-    "start": "node index.ts"
+    "start": "node index.ts",
+    "build": "npx tsc"
   },
   "keywords": [
     "Feature Toggle",
@@ -16,10 +18,13 @@
   "dependencies": {
     "axios": "^0.21.1"
   },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  },
+  "prepublish": "tsc",
   "directories": {
     "doc": "docs"
   },
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kurosfa/ffsdk.git"

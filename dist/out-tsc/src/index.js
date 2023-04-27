@@ -1,18 +1,9 @@
 import axios from 'axios';
+import { from } from "rxjs";
+const BASE_URL = 'https://example.com/api/feature-toggles';
 export class FeatureToggleSDK {
-    constructor() {
-        this.baseUrl = 'https://example.com/api/feature-toggles';
-    }
-    async createFeatureToggle(params) {
-        const response = await axios.post(this.baseUrl, params);
-        return response.data;
-    }
-    async deleteFeatureToggle(id) {
-        const response = await axios.delete(`${this.baseUrl}/${id}`);
-        return response.data;
-    }
     async getFeatureToggles(projectId) {
-        let url = this.baseUrl;
+        let url = BASE_URL;
         if (projectId) {
             url += `?projectId=${projectId}`;
         }
@@ -20,7 +11,7 @@ export class FeatureToggleSDK {
         return response.data;
     }
     async getFeatureToggle(id) {
-        const response = await axios.get(`${this.baseUrl}/${id}`);
+        const response = await axios.get(`${BASE_URL}/${id}`);
         return response.data;
     }
     async getFeatureToggleByName(name) {
@@ -31,9 +22,23 @@ export class FeatureToggleSDK {
         const featureToggles = await this.getFeatureToggles(projectId);
         return featureToggles.find((featureToggle) => featureToggle.name === name);
     }
-    async updateFeatureToggle(id, params) {
-        const response = await axios.put(`${this.baseUrl}/${id}`, params);
-        return response.data;
+}
+export class RxFeatureToggleSDK {
+    getFeatureToggle(id) {
+        return from(axios.get(`${BASE_URL}/${id}`).then((response) => response.data));
+    }
+    getFeatureToggles(projectId) {
+        let url = BASE_URL;
+        if (projectId) {
+            url += `?projectId=${projectId}`;
+        }
+        return from(axios.get(url).then((response) => response.data));
+    }
+    getFeatureToggleByName(name) {
+        return from(axios.get(BASE_URL).then((response) => response.data).then((featureToggles) => featureToggles.find((featureToggle) => featureToggle.name === name)));
+    }
+    getFeatureToggleByNameAndProjectId(name, projectId) {
+        return from(axios.get(BASE_URL + `?projectId=${projectId}`).then((response) => response.data).then((featureToggles) => featureToggles.find((featureToggle) => featureToggle.name === name)));
     }
 }
 //# sourceMappingURL=index.js.map

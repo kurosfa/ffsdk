@@ -16,7 +16,8 @@
   "author": "Nadezhda Kirillova <kirillova.nadezhdaa@yandex.ru>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "typescript": "^5.0.4"

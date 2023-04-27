@@ -1,50 +1,38 @@
 import axios from 'axios';
-
-export type Condition = {
-    parameter: string;
-    operator: string;
-    values: string[];
-};
+import {from, Observable} from "rxjs";
 
 export type FeatureToggle = {
     id: string;
     name: string;
     projectId: string;
     enabled: boolean;
-    conditions: Condition[];
 };
 
-export type FeatureToggleParams = {
-    name: string;
-    projectId: string;
-    enabled: boolean;
-    conditions: Condition[];
-};
+const BASE_URL = '{{host}}/api/v1/requirements';
 
-export class FeatureToggleSDK {
-    private readonly baseUrl = 'https://example.com/api/feature-toggles';
+export interface FeatureToggleSDKInterface {
+    getFeatureToggle(id: string);
 
-    public async createFeatureToggle(params: FeatureToggleParams): Promise<void> {
-        const response = await axios.post(this.baseUrl, params);
-        return response.data;
-    }
+    getFeatureToggleByName(name: string);
 
-    public async deleteFeatureToggle(id: string): Promise<void> {
-        const response = await axios.delete(`${this.baseUrl}/${id}`);
-        return response.data;
-    }
+    getFeatureToggleByNameAndProjectId(name: string, projectId: string);
 
+    getFeatureToggles(projectId?: string);
+}
+
+
+export class FeatureToggleSDK implements FeatureToggleSDKInterface {
     public async getFeatureToggles(projectId?: string): Promise<FeatureToggle[]> {
-        let url = this.baseUrl;
+        let url = BASE_URL;
         if (projectId) {
-            url += `?projectId=${projectId}`;
+            url += `/by-project-id/${projectId}`;
         }
         const response = await axios.get(url);
         return response.data;
     }
 
     public async getFeatureToggle(id: string): Promise<FeatureToggle> {
-        const response = await axios.get(`${this.baseUrl}/${id}`);
+        const response = await axios.get(`${BASE_URL}/${id}`);
         return response.data;
     }
 
@@ -57,9 +45,26 @@ export class FeatureToggleSDK {
         const featureToggles = await this.getFeatureToggles(projectId);
         return featureToggles.find((featureToggle) => featureToggle.name === name);
     }
+}
 
-    public async updateFeatureToggle(id: string, params: FeatureToggleParams): Promise<void> {
-        const response = await axios.put(`${this.baseUrl}/${id}`, params);
-        return response.data;
+export class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
+    public getFeatureToggle(id: string): Observable<FeatureToggle> {
+        return from(axios.get(`${BASE_URL}/${id}`).then((response) => response.data));
+    }
+
+    public getFeatureToggles(projectId?: string): Observable<FeatureToggle[]> {
+        let url = BASE_URL;
+        if (projectId) {
+            url += `/by-project-id/${projectId}`;
+        }
+        return from(axios.get(url).then((response) => response.data));
+    }
+
+    public getFeatureToggleByName(name: string): Observable<FeatureToggle> {
+        return from(axios.get(BASE_URL).then((response) => response.data).then((featureToggles: FeatureToggle[]) => featureToggles.find((featureToggle) => featureToggle.name === name)));
+    }
+
+    public getFeatureToggleByNameAndProjectId(name: string, projectId: string): Observable<FeatureToggle> {
+        return from(axios.get(BASE_URL + `/by-project-id/${projectId}`).then((response) => response.data).then((featureToggles) => featureToggles.find((featureToggle) => featureToggle.name === name)));
     }
 }

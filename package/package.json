@@ -1,0 +1,35 @@
+{
+  "name": "ffsdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
+  "scripts": {
+    "start": "node index.ts"
+  },
+  "keywords": [
+    "Feature Toggle",
+    "TypeScript",
+    "SDK"
+  ],
+  "author": "Nadezhda Kirillova <kirillova.nadezhdaa@yandex.ru>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  },
+  "prepublish": "tsc",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kurosfa/ffsdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kurosfa/ffsdk/issues"
+  },
+  "homepage": "https://github.com/kurosfa/ffsdk#readme"
+}

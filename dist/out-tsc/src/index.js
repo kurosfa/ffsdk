@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { from, map } from "rxjs";
-const BASE_URL = '{{host}}/api/v1/requirements';
+const BASE_URL = 'localhost:8080/api/v1/requirements';
 export class FeatureToggleSDK {
     async getFeatureToggles(projectId) {
         let url = BASE_URL;

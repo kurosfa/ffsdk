@@ -8,7 +8,7 @@ export type FeatureToggle = {
     enabled: boolean;
 };
 
-const BASE_URL = 'localhost:8080/api/v1/requirements';
+const BASE_URL = 'http://localhost:8080/api/v1/requirements';
 
 export interface FeatureToggleSDKInterface {
     getFeatureToggle(id: string);

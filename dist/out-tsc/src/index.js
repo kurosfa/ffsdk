@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { from } from "rxjs";
+import { from, map } from "rxjs";
 const BASE_URL = '{{host}}/api/v1/requirements';
 export class FeatureToggleSDK {
     async getFeatureToggles(projectId) {
@@ -13,10 +13,6 @@ export class FeatureToggleSDK {
     async getFeatureToggle(id) {
         const response = await axios.get(`${BASE_URL}/${id}`);
         return response.data;
-    }
-    async getFeatureToggleByName(name) {
-        const featureToggles = await this.getFeatureToggles();
-        return featureToggles.find((featureToggle) => featureToggle.name === name);
     }
     async getFeatureToggleByNameAndProjectId(name, projectId) {
         const featureToggles = await this.getFeatureToggles(projectId);
@@ -34,11 +30,8 @@ export class RxFeatureToggleSDK {
         }
         return from(axios.get(url).then((response) => response.data));
     }
-    getFeatureToggleByName(name) {
-        return from(axios.get(BASE_URL).then((response) => response.data).then((featureToggles) => featureToggles.find((featureToggle) => featureToggle.name === name)));
-    }
     getFeatureToggleByNameAndProjectId(name, projectId) {
-        return from(axios.get(BASE_URL + `/by-project-id/${projectId}`).then((response) => response.data).then((featureToggles) => featureToggles.find((featureToggle) => featureToggle.name === name)));
+        return this.getFeatureToggles(projectId).pipe(map((featureToggles) => featureToggles.find((featureToggle) => featureToggle.name === name)));
     }
 }
 //# sourceMappingURL=index.js.map

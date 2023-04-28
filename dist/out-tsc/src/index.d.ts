@@ -2,24 +2,21 @@ import { Observable } from "rxjs";
 export type FeatureToggle = {
     id: string;
     name: string;
-    projectId: string;
+    projectId: number;
     enabled: boolean;
 };
 export interface FeatureToggleSDKInterface {
     getFeatureToggle(id: string): any;
-    getFeatureToggleByName(name: string): any;
-    getFeatureToggleByNameAndProjectId(name: string, projectId: string): any;
-    getFeatureToggles(projectId?: string): any;
+    getFeatureToggleByNameAndProjectId(name: string, projectId: number): any;
+    getFeatureToggles(projectId: number): any;
 }
 export declare class FeatureToggleSDK implements FeatureToggleSDKInterface {
-    getFeatureToggles(projectId?: string): Promise<FeatureToggle[]>;
+    getFeatureToggles(projectId: number): Promise<FeatureToggle[]>;
     getFeatureToggle(id: string): Promise<FeatureToggle>;
-    getFeatureToggleByName(name: string): Promise<FeatureToggle>;
-    getFeatureToggleByNameAndProjectId(name: string, projectId: string): Promise<FeatureToggle>;
+    getFeatureToggleByNameAndProjectId(name: string, projectId: number): Promise<FeatureToggle>;
 }
 export declare class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
     getFeatureToggle(id: string): Observable<FeatureToggle>;
-    getFeatureToggles(projectId?: string): Observable<FeatureToggle[]>;
-    getFeatureToggleByName(name: string): Observable<FeatureToggle>;
-    getFeatureToggleByNameAndProjectId(name: string, projectId: string): Observable<FeatureToggle>;
+    getFeatureToggles(projectId: number): Observable<FeatureToggle[]>;
+    getFeatureToggleByNameAndProjectId(name: string, projectId: number): Observable<FeatureToggle>;
 }

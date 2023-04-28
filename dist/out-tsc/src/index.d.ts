@@ -3,7 +3,7 @@ export type FeatureToggle = {
     id: string;
     name: string;
     projectId: number;
-    enabled: boolean;
+    status: boolean;
 };
 export interface FeatureToggleSDKInterface {
     getFeatureToggle(id: string): any;

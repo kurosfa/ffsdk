@@ -5,7 +5,7 @@ export type FeatureToggle = {
     id: string;
     name: string;
     projectId: number;
-    enabled: boolean;
+    status: boolean;
 };
 
 const BASE_URL = 'http://localhost:8080/api/v1/requirements';

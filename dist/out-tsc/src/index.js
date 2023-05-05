@@ -1,15 +1,17 @@
 import axios from 'axios';
 import { from, map } from "rxjs";
-const BASE_URL = 'http://localhost:8080/api/v1/requirements';
+const BASE_URL = 'http://localhost:8080';
+const REQUIREMENT_URL = BASE_URL + '/api/v1/requirements';
+const REQUIREMENT_BY_PROJECT_URL = REQUIREMENT_URL + '/by-project-id';
 const projectId = 2;
 export class FeatureToggleSDK {
     async getFeatureToggles(projectId) {
-        const url = BASE_URL + `/by-project-id/${projectId}`;
+        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         const response = await axios.get(url);
         return response.data;
     }
     async getFeatureToggle(id) {
-        const response = await axios.get(`${BASE_URL}/${id}`);
+        const response = await axios.get(`${REQUIREMENT_URL}/${id}`);
         return response.data;
     }
     async getFeatureToggleByNameAndProjectId(name, projectId) {
@@ -19,10 +21,10 @@ export class FeatureToggleSDK {
 }
 export class RxFeatureToggleSDK {
     getFeatureToggle(id) {
-        return from(axios.get(`${BASE_URL}/${id}`).then((response) => response.data));
+        return from(axios.get(`${REQUIREMENT_URL}/${id}`).then((response) => response.data));
     }
     getFeatureToggles(projectId) {
-        const url = BASE_URL + `/by-project-id/${projectId}`;
+        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         return from(axios.get(url).then((response) => response.data));
     }
     getFeatureToggleByNameAndProjectId(name, projectId) {
@@ -31,9 +33,9 @@ export class RxFeatureToggleSDK {
 }
 export function axiosInterceptor() {
     axios.interceptors.response.use(async function (response) {
-        const url = BASE_URL + `/by-project-id/${projectId}`;
+        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         let features = {};
-        if (!BASE_URL.includes(response.config.baseURL)) {
+        if (response.config.baseURL !== BASE_URL) {
             features = await axios.get(url).then((response) => response.data);
         }
         return Object.assign(Object.assign({}, response), { features });

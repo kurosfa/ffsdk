@@ -8,7 +8,9 @@ export type FeatureToggle = {
     status: boolean;
 };
 
-const BASE_URL = 'http://localhost:8080/api/v1/requirements';
+const BASE_URL = 'http://localhost:8080';
+const REQUIREMENT_URL = BASE_URL + '/api/v1/requirements';
+const REQUIREMENT_BY_PROJECT_URL = REQUIREMENT_URL + '/by-project-id';
 const projectId = 2;
 
 export interface FeatureToggleSDKInterface {
@@ -19,16 +21,15 @@ export interface FeatureToggleSDKInterface {
     getFeatureToggles(projectId: number);
 }
 
-
 export class FeatureToggleSDK implements FeatureToggleSDKInterface {
     public async getFeatureToggles(projectId: number): Promise<FeatureToggle[]> {
-        const url = BASE_URL + `/by-project-id/${projectId}`;
+        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         const response = await axios.get(url);
         return response.data;
     }
 
     public async getFeatureToggle(id: string): Promise<FeatureToggle> {
-        const response = await axios.get(`${BASE_URL}/${id}`);
+        const response = await axios.get(`${REQUIREMENT_URL}/${id}`);
         return response.data;
     }
 
@@ -40,11 +41,11 @@ export class FeatureToggleSDK implements FeatureToggleSDKInterface {
 
 export class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
     public getFeatureToggle(id: string): Observable<FeatureToggle> {
-        return from(axios.get(`${BASE_URL}/${id}`).then((response) => response.data));
+        return from(axios.get(`${REQUIREMENT_URL}/${id}`).then((response) => response.data));
     }
 
     public getFeatureToggles(projectId: number): Observable<FeatureToggle[]> {
-        const url = BASE_URL + `/by-project-id/${projectId}`;
+        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         return from(axios.get(url).then((response) => response.data));
     }
 
@@ -55,10 +56,10 @@ export class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
 
 export function axiosInterceptor() {
     axios.interceptors.response.use(async function (response) {
-        const url = BASE_URL + `/by-project-id/${projectId}`;
+        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         let features = {}
 
-        if (!BASE_URL.includes(response.config.baseURL)){
+        if (response.config.baseURL !== BASE_URL){
             features = await axios.get(url).then((response) => response.data);
         }
 

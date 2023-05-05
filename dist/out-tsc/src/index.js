@@ -35,7 +35,7 @@ export function axiosInterceptor() {
     axios.interceptors.response.use(async function (response) {
         const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         let features = {};
-        if (response.config.baseURL !== BASE_URL) {
+        if (response.config.url.includes(BASE_URL)) {
             features = await axios.get(url).then((response) => response.data);
         }
         return Object.assign(Object.assign({}, response), { features });

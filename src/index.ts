@@ -59,7 +59,7 @@ export function axiosInterceptor() {
         const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         let features = {}
 
-        if (response.config.baseURL !== BASE_URL){
+        if (response.config.url.includes(BASE_URL)) {
             features = await axios.get(url).then((response) => response.data);
         }
 

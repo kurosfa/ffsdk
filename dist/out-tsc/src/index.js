@@ -33,12 +33,12 @@ export class RxFeatureToggleSDK {
 }
 export function axiosInterceptor() {
     axios.interceptors.response.use(async function (response) {
-        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
-        let features = {};
         if (response.config.url.includes(BASE_URL)) {
-            features = await axios.get(url).then((response) => response.data);
+            return response;
         }
-        return Object.assign(Object.assign({}, response), { features });
+        const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
+        const features = await axios.get(url);
+        return Object.assign(Object.assign({}, response), { features: features.data });
     }, function (error) {
         return Promise.reject(error);
     });

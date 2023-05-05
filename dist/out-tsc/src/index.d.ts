@@ -20,3 +20,4 @@ export declare class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
     getFeatureToggles(projectId: number): Observable<FeatureToggle[]>;
     getFeatureToggleByNameAndProjectId(name: string, projectId: number): Observable<FeatureToggle>;
 }
+export declare function axiosInterceptor(): void;

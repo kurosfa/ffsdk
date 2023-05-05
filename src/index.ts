@@ -9,6 +9,7 @@ export type FeatureToggle = {
 };
 
 const BASE_URL = 'http://localhost:8080/api/v1/requirements';
+const projectId = 2;
 
 export interface FeatureToggleSDKInterface {
     getFeatureToggle(id: string);
@@ -21,10 +22,7 @@ export interface FeatureToggleSDKInterface {
 
 export class FeatureToggleSDK implements FeatureToggleSDKInterface {
     public async getFeatureToggles(projectId: number): Promise<FeatureToggle[]> {
-        let url = BASE_URL;
-        if (projectId) {
-            url += `/by-project-id/${projectId}`;
-        }
+        const url = BASE_URL + `/by-project-id/${projectId}`;
         const response = await axios.get(url);
         return response.data;
     }
@@ -46,14 +44,22 @@ export class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
     }
 
     public getFeatureToggles(projectId: number): Observable<FeatureToggle[]> {
-        let url = BASE_URL;
-        if (projectId) {
-            url += `/by-project-id/${projectId}`;
-        }
+        const url = BASE_URL + `/by-project-id/${projectId}`;
         return from(axios.get(url).then((response) => response.data));
     }
 
     public getFeatureToggleByNameAndProjectId(name: string, projectId: number): Observable<FeatureToggle> {
         return this.getFeatureToggles(projectId).pipe(map((featureToggles) => featureToggles.find((featureToggle) => featureToggle.name === name)));
     }
+}
+
+export function axiosInterceptor() {
+    axios.interceptors.response.use(async function (response) {
+        const url = BASE_URL + `/by-project-id/${projectId}`;
+        const features = await axios.get(url).then((response) => response.data)
+
+        return {...response, features};
+    }, function (error) {
+        return Promise.reject(error);
+    });
 }

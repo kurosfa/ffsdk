@@ -56,7 +56,11 @@ export class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
 export function axiosInterceptor() {
     axios.interceptors.response.use(async function (response) {
         const url = BASE_URL + `/by-project-id/${projectId}`;
-        const features = await axios.get(url).then((response) => response.data)
+        let features = {}
+
+        if (!BASE_URL.includes(response.config.baseURL)){
+            features = await axios.get(url).then((response) => response.data);
+        }
 
         return {...response, features};
     }, function (error) {

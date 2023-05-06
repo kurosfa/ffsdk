@@ -13,6 +13,8 @@ const REQUIREMENT_URL = BASE_URL + '/api/v1/requirements';
 const REQUIREMENT_BY_PROJECT_URL = REQUIREMENT_URL + '/by-project-id';
 const projectId = 2;
 
+let FEATURES = [];
+
 export interface FeatureToggleSDKInterface {
     getFeatureToggle(id: string);
 
@@ -67,4 +69,26 @@ export function axiosInterceptor() {
     }, function (error) {
         return Promise.reject(error);
     });
+}
+
+export function xmlHttpRequestInterceptor() {
+    let oldXHROpen = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function (method: string, url: string) {
+        this.addEventListener('load', function () {
+            if (!url.includes(BASE_URL)) {
+                const xhr = new XMLHttpRequest();
+                const featureUrl = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
+
+                xhr.open('GET', featureUrl);
+                if (!url.includes(BASE_URL)) {
+                    xhr.send();
+                    xhr.onload = function () {
+                        FEATURES = xhr.response;
+                    };
+                }
+            }
+        });
+
+        return oldXHROpen.apply(this, arguments);
+    }
 }

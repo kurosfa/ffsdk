@@ -4,6 +4,7 @@ const BASE_URL = 'http://localhost:8080';
 const REQUIREMENT_URL = BASE_URL + '/api/v1/requirements';
 const REQUIREMENT_BY_PROJECT_URL = REQUIREMENT_URL + '/by-project-id';
 const projectId = 2;
+let FEATURES = [];
 export class FeatureToggleSDK {
     async getFeatureToggles(projectId) {
         const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
@@ -42,5 +43,24 @@ export function axiosInterceptor() {
     }, function (error) {
         return Promise.reject(error);
     });
+}
+export function xmlHttpRequestInterceptor() {
+    let oldXHROpen = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function (method, url) {
+        this.addEventListener('load', function () {
+            if (!url.includes(BASE_URL)) {
+                const xhr = new XMLHttpRequest();
+                const featureUrl = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
+                xhr.open('GET', featureUrl);
+                if (!url.includes(BASE_URL)) {
+                    xhr.send();
+                    xhr.onload = function () {
+                        FEATURES = xhr.response;
+                    };
+                }
+            }
+        });
+        return oldXHROpen.apply(this, arguments);
+    };
 }
 //# sourceMappingURL=index.js.map

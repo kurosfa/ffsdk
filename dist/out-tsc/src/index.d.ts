@@ -22,3 +22,4 @@ export declare class RxFeatureToggleSDK implements FeatureToggleSDKInterface {
 }
 export declare function axiosInterceptor(): void;
 export declare function xmlHttpRequestInterceptor(): void;
+export declare function fetchInterceptor(): void;

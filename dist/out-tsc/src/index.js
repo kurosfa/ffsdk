@@ -3,6 +3,7 @@ import { from, map } from "rxjs";
 const BASE_URL = 'http://localhost:8080';
 const REQUIREMENT_URL = BASE_URL + '/api/v1/requirements';
 const REQUIREMENT_BY_PROJECT_URL = REQUIREMENT_URL + '/by-project-id';
+// http://localhost:8080/api/v1/requirements/by-project-id
 const projectId = 2;
 let FEATURES = [];
 export class FeatureToggleSDK {
@@ -61,6 +62,26 @@ export function xmlHttpRequestInterceptor() {
             }
         });
         return oldXHROpen.apply(this, arguments);
+    };
+}
+export function fetchInterceptor() {
+    const { fetch: originalFetch } = window;
+    window.fetch = async (...args) => {
+        const [resource, config] = args;
+        const response = await originalFetch(resource, config);
+        const featureUrl = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
+        let features = [];
+        if (!response.url.includes(BASE_URL)) {
+            fetch(featureUrl)
+                .then((response) => response.json())
+                .then((json) => features = json);
+        }
+        const json = () => response
+            .clone()
+            .json()
+            .then((data) => ({ data, features: features }));
+        response.json = json;
+        return response;
     };
 }
 //# sourceMappingURL=index.js.map

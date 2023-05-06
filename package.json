@@ -1,6 +1,6 @@
 {
   "name": "ffsdk",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "TypeScript SDK",
   "main": "dist/out-tsc/src/index.js",
   "types": "dist/out-tsc/src/index.d.ts",

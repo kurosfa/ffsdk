@@ -101,7 +101,6 @@ export function fetchInterceptor() {
         const [resource, config] = args;
 
         const response = await originalFetch(resource, config);
-        let features = [];
 
         if (!response.url.includes(BASE_URL)) {
             const featureUrl = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
@@ -114,7 +113,7 @@ export function fetchInterceptor() {
                 response
                     .clone()
                     .json()
-                    .then((data) => ({data, features: features}));
+                    .then((data) => ({data, features: FEATURES}));
         }
 
         return response;

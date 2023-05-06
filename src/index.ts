@@ -105,15 +105,12 @@ export function fetchInterceptor() {
         if (!response.url.includes(BASE_URL)) {
             const featureUrl = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
 
-            fetch(featureUrl)
+            await fetch(featureUrl)
                 .then((response) => response.json())
-                .then((json) => FEATURES = json.data);
+                .then((json) => {
+                    FEATURES = json.data
+                });
 
-            response.json = () =>
-                response
-                    .clone()
-                    .json()
-                    .then((data) => ({data, features: FEATURES}));
         }
 
         return response;

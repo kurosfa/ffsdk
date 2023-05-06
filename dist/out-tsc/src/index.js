@@ -40,6 +40,7 @@ export function axiosInterceptor() {
         }
         const url = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         const features = await axios.get(url);
+        FEATURES = features.data;
         return Object.assign(Object.assign({}, response), { features: features.data });
     }, function (error) {
         return Promise.reject(error);
@@ -69,17 +70,17 @@ export function fetchInterceptor() {
     window.fetch = async (...args) => {
         const [resource, config] = args;
         const response = await originalFetch(resource, config);
-        const featureUrl = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
         let features = [];
         if (!response.url.includes(BASE_URL)) {
+            const featureUrl = REQUIREMENT_BY_PROJECT_URL + `/${projectId}`;
             fetch(featureUrl)
                 .then((response) => response.json())
-                .then((json) => features = json);
+                .then((json) => FEATURES = json.data);
+            response.json = () => response
+                .clone()
+                .json()
+                .then((data) => ({ data, features: features }));
         }
-        response.json = () => response
-            .clone()
-            .json()
-            .then((data) => ({ data, features: features }));
         return response;
     };
 }

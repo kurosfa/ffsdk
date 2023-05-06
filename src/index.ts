@@ -109,13 +109,11 @@ export function fetchInterceptor() {
                 .then((json) => features = json);
         }
 
-        const json = () =>
+        response.json = () =>
             response
                 .clone()
                 .json()
                 .then((data) => ({data, features: features}));
-
-        response.json = json;
         return response;
     };
 }

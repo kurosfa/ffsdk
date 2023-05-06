@@ -76,11 +76,10 @@ export function fetchInterceptor() {
                 .then((response) => response.json())
                 .then((json) => features = json);
         }
-        const json = () => response
+        response.json = () => response
             .clone()
             .json()
             .then((data) => ({ data, features: features }));
-        response.json = json;
         return response;
     };
 }
